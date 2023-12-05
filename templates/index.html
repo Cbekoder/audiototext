@@ -35,9 +35,9 @@
                 <table>
                     <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Audio</th>
-                        <th>Text</th>
+                        <th class="col-md-2">ID</th>
+                        <th class="col-md-5">Audio</th>
+                        <th class="col-md-5">Text</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -45,7 +45,7 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td>
-                            <audio controls>
+                            <audio id="popupAudio" controls>
                                 <source id="audioSource" src="{{ h.audiofile.url }}" type="audio/mp3">
                             </audio>
                         </td>
@@ -56,7 +56,7 @@
                 </table>
             </div>
         </div>
-<!--        logout button-->
+        <!--        logout button-->
         <button class="logoutButton logoutButton--dark" onclick="delayedLogout()">
             <svg class="doorway" viewBox="0 0 100 100">
                 <path d="M93.4 86.3H58.6c-1.9 0-3.4-1.5-3.4-3.4V17.1c0-1.9 1.5-3.4 3.4-3.4h34.8c1.9 0 3.4 1.5 3.4 3.4v65.8c0 1.9-1.5 3.4-3.4 3.4z"/>
@@ -96,7 +96,7 @@
         <div class="signin-signup">
             <form method="post" enctype="multipart/form-data" class="sign-in-form">{% csrf_token %}
                 <h2 class="title">Upload file</h2>
-                 <input type="hidden" name="forma" value="f1">
+                <input type="hidden" name="forma" value="f1">
                 <input type="file" id="audioFile" name="audio_file" accept=".wav, .mp3, .ogg" required>
                 <!--                <input class="input-field" type="file" id="audioFile" name="audio_file1" accept=".wav, .mp3, .ogg" style="display: none"/>-->
                 <label for="audioFile">
@@ -104,53 +104,43 @@
                          alt="Upload Icon">
                 </label>
                 <button type="submit" class="btn solid">Send</button>
-                <p>{{ transcribed_text }}</p>
             </form>
-                        <form action="#" class="sign-up-form">
-                            <input type="hidden" name="forma" value="f2">
-                            <h2 class="title">Use Microphone</h2>
-                            <div class="app">
-                                <select name="" id="micSelect"></select>
-                                <div class>
-                                    <select id="visSelect">
-                                        <option value="frequencybars">Bar</option>
-                                        <option value="sinewave">Wave</option>
-                                        <option value="circle">Circle</option>
-                                    </select>
+            <!--                        <form action="#" class="sign-up-form" enctype="multipart/form-data">{% csrf_token %}-->
+            <form action="#" id="audioForm" method="post" class="sign-up-form" enctype="multipart/form-data">{% csrf_token %}
+                <input type="hidden" name="forma" value="f2">
+                <input type="file" id="audio_file" name="audio">
+                <h2 class="title">Use Microphone</h2>
+                <div class="app">
+                    <select id="micSelect"></select>
+                    <div class>
+                        <select id="visSelect">
+                            <option value="circle" selected>Circle</option>
+                        </select>
 
-                                    <a id="download">Download</a>
+<!--                        <a id="download">Download</a>-->
 
-                                    <div class="audio-controls">
-                                        <button id="record">Record</button>
-                                        <button id="stop">Stop</button>
-                                        <audio name='audio' id="audio" controls></audio>
-                                    </div>
-
-                                    <div id="msg">Recording...</div>
-                                    <canvas width="500" height="300" class="canvas"></canvas>
-                                </div>
+                        <div class="audio-controls">
+                            <div id="record">
+                                <i class="fas fa-microphone fa-xl" style="font-size: 50px;"></i> <!-- Use the appropriate microphone icon class -->
                             </div>
-                            <button type="submit" class="btn">Send</button>
-                        </form>
-            <!--            ===============================================================-->
-            <!--            <form method="post" enctype="multipart/form-data" class="sign-up-form" id="myForm">-->
-            <!--                {% csrf_token %}-->
-            <!--                <button id="recordBtn" class="microphone-icon" aria-label="Record" type="button"-->
-            <!--                        onclick="startRecording()"></button>-->
-            <!--                <span id="timer">00:00/00:00</span>-->
-            <!--                <canvas id="visualizer" width="200" height="50"></canvas>-->
-            <!--                <button id="sendBtn" type="button" onclick="sendForm()">Send</button>-->
-            <!--            </form>-->
-<!--===========================================-->
-<!--            <form method="post" enctype="multipart/form-data" class="sign-up-form">{% csrf_token %}-->
-<!--                <input type="hidden" name="forma" value="f2">-->
-<!--                <h2 class="title">Record your voice</h2>-->
-<!--                <button id="recordBtn" class="microphone-icon" aria-label="Record" onclick="toggleRecording()"></button>-->
-<!--                <span id="timer">00:00/00:00</span>-->
-<!--                <button action='/' id="sendBtn">Send</button>-->
-<!--                <p>{{ transcribed_text }}</p>-->
-<!--            </form>-->
+
+                            <div id="stop" style="visibility: hidden;">
+                                <i class="fas fa-stop fa-beat fa-xl" style="font-size: 50px;"></i> <!-- Use the appropriate stop icon class -->
+                            </div>
+                            <div id="msg" style="visibility: hidden;">
+                                <i class="fas fa-solid fa-circle fa-beat-fade fa-xl" style="color: #ff0000;"></i>
+                            </div>
+                            <canvas width="500" height="300" class="canvas"></canvas>
+                            <audio name='audio' id="audio" controls></audio>
+                        </div>
+
+
+                    </div>
+                </div>
+                <button type="submit" class="btn solid">Send</button>
+            </form>
         </div>
+        <p class="documentOutput">{{ transcribed_text }}</p>
     </div>
     <div class="panels-container">
         <div class="panel left-panel">
@@ -197,6 +187,24 @@
 <script src="{% static 'rec.js'%}"></script>
 <script src="{% static 'lgout.js'%}"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var popupContainer = document.getElementById('popupContainer');
+        var popupAudio = document.getElementById('popupAudio');
+
+        document.getElementById('closePopupBtn').addEventListener('click', function () {
+            popupAudio.pause();
+            popupAudio.currentTime = 0;
+        });
+
+        popupContainer.addEventListener('click', function (event) {
+            if (event.target === popupContainer) {
+                popupAudio.pause();
+                popupAudio.currentTime = 0;
+            }
+        });
+    });
+</script>
+<script>
     function delayedLogout() {
         setTimeout(function() {
             window.location.href = '/logout/';
@@ -204,59 +212,67 @@
     }
 </script>
 <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const startRecordingButton = document.getElementById('startRecording');
-            const stopRecordingButton = document.getElementById('stopRecording');
-            const audioPlayer = document.getElementById('audioPlayer');
-            const uploadButton = document.getElementById('uploadButton');
-            const audioForm = document.getElementById('audioForm');
-            let mediaRecorder;
-            let chunks = [];
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const startRecordingButton = document.getElementById('startRecording');
+        const stopRecordingButton = document.getElementById('stopRecording');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const uploadButton = document.getElementById('uploadButton');
+        const audioForm = document.getElementById('audioForm');
+        let mediaRecorder;
+        let chunks = [];
 
-            startRecordingButton.addEventListener('click', () => {
-                navigator.mediaDevices.getUserMedia({ audio: true })
-                    .then((stream) => {
-                        mediaRecorder = new MediaRecorder(stream);
+        startRecordingButton.addEventListener('click', () => {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then((stream) => {
+                    mediaRecorder = new MediaRecorder(stream);
 
-                        mediaRecorder.ondataavailable = (e) => {
-                            if (e.data.size > 0) {
-                                chunks.push(e.data);
-                            }
-                        };
+                    mediaRecorder.ondataavailable = (e) => {
+                        if (e.data.size > 0) {
+                            chunks.push(e.data);
+                        }
+                    };
 
-                        mediaRecorder.onstop = () => {
-                            const blob = new Blob(chunks, { type: 'audio/wav' });
-                            const audioUrl = URL.createObjectURL(blob);
-                            audioPlayer.src = audioUrl;
-                            chunks = [];
-                            uploadButton.style.display = 'block';
-                        };
+                    mediaRecorder.onstop = () => {
+                        const blob = new Blob(chunks, { type: 'audio/wav' });
 
-                        mediaRecorder.start();
-                        startRecordingButton.disabled = true;
-                        stopRecordingButton.disabled = false;
-                    })
-                    .catch((error) => {
-                        console.error('Error accessing microphone:', error);
-                    });
-            });
 
-            stopRecordingButton.addEventListener('click', () => {
-                mediaRecorder.stop();
-                startRecordingButton.disabled = false;
-                stopRecordingButton.disabled = true;
-            });
+                        const audioUrl = URL.createObjectURL(blob);
+                        audioPlayer.src = audioUrl;
+                        chunks = [];
+                        uploadButton.style.display = 'block';
+                    };
 
-            audioForm.addEventListener('submit', (event) => {
-                event.preventDefault();
-                const formData = new FormData(audioForm);
-                fetch(audioForm.action, {
-                    method: 'POST',
-                    body: formData,
+                    mediaRecorder.start();
+                    startRecordingButton.disabled = true;
+                    stopRecordingButton.disabled = false;
                 })
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch(error => console.error('Error uploading recording:', error));
+                .catch((error) => {
+                    console.error('Error accessing microphone:', error);
+                });
+        });
+
+        stopRecordingButton.addEventListener('click', () => {
+            mediaRecorder.stop();
+            startRecordingButton.disabled = false;
+            stopRecordingButton.disabled = true;
+        });
+
+    });
+</script>
+<!--microphone-->
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const recordButton = document.getElementById('record');
+            const stopButton = document.getElementById('stop');
+
+            recordButton.addEventListener('click', function () {
+                // Add the 'active' class to change color
+                recordButton.querySelector('i').classList.add('active');
+            });
+
+            stopButton.addEventListener('click', function () {
+                // Remove the 'active' class to restore color
+                recordButton.querySelector('i').classList.remove('active');
             });
         });
     </script>

@@ -1,4 +1,3 @@
-from django.shortcuts import render
 import requests
 from django.views import View
 from django.http import HttpResponse
@@ -6,6 +5,7 @@ from django.shortcuts import render, redirect
 from .models import Audio
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.conf import settings
 
 def login_view(request):
     if request.method == 'POST' and request.POST.get('forma')=='f2':
@@ -48,14 +48,15 @@ class AudioView(View):
                 audio_file = request.FILES['audio_file']
             elif request.POST.get('forma')=='f2':
                 audio_file = request.FILES.get('audio')
-            # api_key = 'fdfdd434-d03e-45c8-9f65-e0defaaa1e23:2b689c06-2feb-4f8e-b7fc-d768df7c6763'
+                print(audio_file)
+
             url = 'https://studio.mohir.ai/api/v1/stt'
             payload = {}
             files = [
                 ('file', ('out.wav', audio_file, 'audio/wav'))
             ]
             headers = {
-                'Authorization': 'fdfdd434-d03e-45c8-9f65-e0defaaa1e23:2b689c06-2feb-4f8e-b7fc-d768df7c6763'
+                'Authorization': "fdfdd434-d03e-45c8-9f65-e0defaaa1e23:2b689c06-2feb-4f8e-b7fc-d768df7c6763"
             }
 
             response = requests.request("POST", url, headers=headers, data=payload, files=files)
@@ -77,14 +78,14 @@ class AudioView(View):
 
 
 def transcibe(file):
-    # api_key = 'fdfdd434-d03e-45c8-9f65-e0defaaa1e23:2b689c06-2feb-4f8e-b7fc-d768df7c6763'
+
     url = 'https://studio.mohir.ai/api/v1/stt'
     payload = {}
     files = [
         ('file', ('out.wav', file, 'audio/wav'))
     ]
     headers = {
-        'Authorization': 'fdfdd434-d03e-45c8-9f65-e0defaaa1e23:2b689c06-2feb-4f8e-b7fc-d768df7c6763'
+        'Authorization': "fdfdd434-d03e-45c8-9f65-e0defaaa1e23:2b689c06-2feb-4f8e-b7fc-d768df7c6763"
     }
 
     response = requests.request("POST", url, headers=headers, data=payload, files=files)

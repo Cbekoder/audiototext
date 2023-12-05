@@ -7,4 +7,4 @@ class Audio(models.Model):
     userid = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.userid.username
+        return self.userid.username + " " + self.audiofile.__str__()

@@ -442,11 +442,13 @@ form.sign-in-form {
     transition: 0.5s;
     position: absolute;
     bottom: 20px; /* Updated top position to place it at the top */
-    left: 50%; /* Move it to the center horizontally */
+    left: 76%; /* Move it to the center horizontally */
     transform: translateX(-50%); /* Adjust for centering */
     z-index: 998;
 }
-
+#micSelect{
+    display: none;
+}
 .popup-container {
     display: none;
     position: fixed;
@@ -457,6 +459,8 @@ form.sign-in-form {
     background-color: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
+    max-height: 100vh;
+    overflow-y: auto;
     z-index: 999;
 }
 
@@ -470,15 +474,6 @@ form.sign-in-form {
     right: 40px;
 }
 
-
-    .popup-container {
-        max-height: 100vh;
-        overflow-y: auto;
-    }
-
-    .popup-content {
-        /* Your existing styles for .popup-content */
-    }
 
     table {
         width: 100%;
@@ -519,6 +514,24 @@ form.sign-in-form {
         padding: 8px;
     }
 
+    td:first-child {
+    text-align: center;
+    width: 40px;
+    }
+
+    th:first-child {
+    text-align: center;
+    width: 40px;
+    }
+
+    td:second-child {
+    width: 300px;
+    }
+
+    th:second-child {
+    width: 300px;
+    }
+
     th {
         background-color: #f2f2f2;
     }
@@ -526,25 +539,13 @@ form.sign-in-form {
     audio {
         width: 100%;
     }
-
-
-.microphone-icon {
-    background-color: #3498db;
-    border: none;
-    color: #fff;
-    font-size: 24px;
-    padding: 10px;
-    cursor: pointer;
-    transition: box-shadow 0.3s ease-in-out;
+#audio_file {
+    display: none;
 }
-
-.microphone-icon.recording {
-    box-shadow: 0 0 10px 5px green;
+#visSelect {
+    display: none;
 }
-
-.microphone-icon.stopped {
-    box-shadow: 0 0 10px 5px red;
-}
+
 
 #sendBtn {
     background-color: #2ecc71;
@@ -554,3 +555,73 @@ form.sign-in-form {
     padding: 10px 20px;
     cursor: pointer;
 }
+.documentOutput {
+    width: 1000px;
+    height: 49px;
+    margin: 10px auto; /* Updated margin to center horizontally */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 49px;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.5s;
+    position: absolute;
+    bottom: 20px;
+    left: 45%;
+    transform: translateX(-50%); /* Adjust for centering */
+    outline: none;
+    z-index: 998;
+}
+
+
+.documentOutput p {
+    margin-bottom: 10px;
+}
+
+#record {
+    position: absolute;
+    top: 180px;
+    left: 47.93%;
+    display: inline-block;
+    margin-right: 40px;
+}
+#stop {
+    position: absolute;
+    top: 180px;
+    left: 47.7%;
+    display: inline-block;
+    margin-right: 40px;
+}
+#msg {
+    position: absolute;
+    top: 235px;
+    left: 49%;
+    display: inline-block;
+    margin-right: 40px;
+}
+.active {
+    color: red;
+}
+@keyframes beatFade {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        50% {
+            transform: scale(1.2);
+            opacity: 0.6;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .fa-beat-fade {
+        animation: beatFade 1s infinite; /* Adjust the duration as needed */
+    }
